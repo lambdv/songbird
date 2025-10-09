@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 
+import java.util.List;
+
 public class Tensor {
     private final double[] data;
     private final int[] shape;
@@ -124,6 +126,38 @@ public class Tensor {
     public double get(int... indices) {
         int off = offset(indices);
         return data[off];
+    }
+
+    public Tensor getSlice(int... indices) {
+        if (indices == null) throw new IllegalArgumentException("indices must not be null");
+        if (indices.length < 0 || indices.length >= shape.length) {
+            throw new IllegalArgumentException("Slice requires fewer indices than rank; got " + indices.length + " for rank " + shape.length);
+        }
+        for (int d = 0; d < indices.length; d++) {
+            int idx = indices[d];
+            int dimSize = shape[d];
+            if (idx < 0 || idx >= dimSize) {
+                throw new IndexOutOfBoundsException("Index " + idx + " out of bounds for dim " + d + " with size " + dimSize);
+            }
+        }
+
+        int outRank = shape.length - indices.length;
+        int[] outShape = new int[outRank];
+        for (int i = 0; i < outRank; i++) outShape[i] = shape[i + indices.length];
+
+        double[] out = new double[product(outShape)];
+        int write = 0;
+        IndexIterator it = new IndexIterator(outShape);
+        while (it.hasNext()) {
+            int[] tail = it.next();
+            int[] full = new int[shape.length];
+            // prefix fixed indices
+            for (int i = 0; i < indices.length; i++) full[i] = indices[i];
+            // tail indices
+            for (int i = 0; i < tail.length; i++) full[i + indices.length] = tail[i];
+            out[write++] = get(full);
+        }
+        return new Tensor(out, outShape);
     }
 
     public void set(double value, int... indices) {
@@ -495,6 +529,29 @@ public class Tensor {
         sb.append("])");
         return sb.toString();
     }
+    /**
+     * returns string representation of the data shaped as the shape of the tensor
+     * @return
+     */
+    public String toStringShape(){
+        StringBuilder sb = new StringBuilder();
+        appendToStringShape(sb, 0, new int[shape.length]);
+        return sb.toString();
+    }
+
+    private void appendToStringShape(StringBuilder sb, int dim, int[] index) {
+        if (dim == shape.length) {
+            sb.append(get(index));
+            return;
+        }
+        sb.append("[");
+        for (int i = 0; i < shape[dim]; i++) {
+            index[dim] = i;
+            appendToStringShape(sb, dim + 1, index);
+            if (i < shape[dim] - 1) sb.append(", ");
+        }
+        sb.append("]");
+    }
 
     // Simple N-D index iterator over a given shape
     private static final class IndexIterator {
@@ -532,5 +589,9 @@ public class Tensor {
             }
             return out;
         }
+    }
+
+    public List<?> toList() {
+        return Arrays.asList(this.toArray());
     }
 }
