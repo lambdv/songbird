@@ -6,12 +6,13 @@
 
     <groupId>com.github.lambdv</groupId>
     <artifactId>songbird</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>v1.0.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -25,6 +26,8 @@
             <artifactId>commons-csv</artifactId>
             <version>1.11.0</version>
         </dependency>
+    
+
     </dependencies>
 
     <build>
@@ -39,5 +42,18 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub lambdv Maven Packages</name>
+            <url>https://maven.pkg.github.com/lambdv/songbird</url>
+        </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <name>GitHub lambdv Maven Packages (Snapshots)</name>
+            <url>https://maven.pkg.github.com/lambdv/songbird</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

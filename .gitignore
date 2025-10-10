@@ -5,3 +5,6 @@
 /bookmarks.md
 /.vscode
 /songbird/target
+/.cursor
+.fake
+/songbird/data
