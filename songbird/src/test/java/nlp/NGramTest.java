@@ -18,6 +18,7 @@ public class NGramTest {
         var n = 2;
         var model = new NGram(corpus, n);
         var nextWord = model.forward("i like");
+        System.out.println(nextWord);
         Assertions.assertTrue(nextWord.equals("cats"));
     }
 
@@ -26,12 +27,14 @@ public class NGramTest {
         var input = "i like";
         var corpus = List.of(
             "i like",
-            "i like cats"
+            "i don't like dogs",
+            "i dislike cats"
         );
         var n = 2;
         var model = new NGram(corpus, n);
-        var nextWord = model.forward("i like");
-        Assertions.assertTrue(nextWord.equals("cats"));
+        var nextWord = model.forward(input);
+        System.out.println(nextWord);
+        Assertions.assertTrue(nextWord.equals("dogs"));
     }
     
 }
