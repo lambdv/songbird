@@ -12,6 +12,14 @@ public class MLP{
         this.layers = layers;
     }
 
+    public static MLP of(int... sizes){
+        return new MLP(
+            IntStream.range(1, sizes.length)
+                .mapToObj(i -> NeuronLayer.of(sizes[i-1], sizes[i], ActivationFunction.Identity))
+                .toList()
+        );
+    }
+
     public static MLP of(int[] sizes, ActivationFunction[] activations){
         return new MLP(
             IntStream.range(1, sizes.length)
@@ -19,6 +27,8 @@ public class MLP{
                 .toList()
         );
     }
+
+
 
     /**
      * feeds input through the network and returns the output

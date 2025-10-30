@@ -13,7 +13,7 @@ public record NeuronLayer(
     }
 
     public static NeuronLayer of(
-        int numWeights, // head/mouth
+        int numWeights, // mouth
         int numNeurons, // tail
         ActivationFunction activation
     ){
